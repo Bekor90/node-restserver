@@ -156,3 +156,7 @@ app.post('/google', async (req, res) => {
 
 
 module.exports = app;
+
+///CONFIGURAR VARIABLES DEL SERVIDOR CON HEROKU
+
+//https://johnvanegas-restserver-node.herokuapp.com/
