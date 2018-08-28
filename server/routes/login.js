@@ -58,7 +58,7 @@ app.post('/login', (req, res) => {
 
 //configuraciones de google
 
-async function verify() {
+async function verify( token ) {
   const ticket = await client.verifyIdToken({
       idToken: token,
       audience: process.env.CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
@@ -81,12 +81,12 @@ app.post('/google', async (req, res) => {
 	let token = req.body.idtoken;
 
 	let googleUser = await verify(token)
-							.catch( e => {
-								return res.status(403).json({
-									ok: false,
-									err: e
-								});
+						.catch( e => {
+							return res.status(403).json({
+								ok: false,
+								err: e
 							});
+						});
 
 	//Buscar el correo de google en la BD
 	Usuario.findOne( {email: googleUser.email }, (err, usuarioDB) => {
@@ -109,7 +109,7 @@ app.post('/google', async (req, res) => {
 
 			}else{
 				let token = jwt.sign({
-					usuario.usuarioDB
+					usuario: usuarioDB
 				}, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
 
 				return res.json({
@@ -126,7 +126,7 @@ app.post('/google', async (req, res) => {
 			usuario.nombre = googleUser.nombre;
 			usuario.email = googleUser.email;
 			usuario.img = googleUser.img;
-			usuario.google = googleUser.nombre;
+			usuario.google = true;
 			usuario.password = ':)';
 
 			usuario.save( (err, usuarioDB) => {
@@ -138,7 +138,7 @@ app.post('/google', async (req, res) => {
 				};
 
 				let token = jwt.sign({
-					usuario.usuarioDB
+					usuario: usuarioDB
 				}, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
 
 				return res.json({
