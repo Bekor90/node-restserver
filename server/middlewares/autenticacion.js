@@ -5,7 +5,8 @@ const jwt = require('jsonwebtoken');
 
 let verificaToken = (req, res, next) => {
 
-	let token = req.get('token');
+	//validamos si el token viene por cabecera o por url
+	let token = req.query.token ? req.query.token : req.get('token');
 
 	jwt.verify(token, process.env.SEED, (err, decoded) => {
 
@@ -44,9 +45,9 @@ let verificaAdmin_Role = (req, res, next) => {
 			}
 		});
 	}
-};				
+};			
 
 module.exports = {
 	verificaToken,
-	verificaAdmin_Role
+	verificaAdmin_Role,
 }
